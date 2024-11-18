@@ -1,4 +1,4 @@
-package utilitiees;
+package utilities;
 
 import interfaces.DepositOperations;
 import models.User;
