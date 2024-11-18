@@ -1,68 +1,100 @@
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        AccountService accountService = new AccountService();
-        Deposite deposite = new Deposite(accountService);
-        Withdraw withdraw = new Withdraw(accountService);
-
         Scanner scanner = new Scanner(System.in);
+        Write writer = new Write();
+        DepositService depositService = new DepositService(writer);
+        WithdrawService withdrawService = new WithdrawService(writer);
 
-        try {
-            accountService.writeAccountToFile("John Doe", 1000.0, "password123");
-        } catch (IOException e) {
-            System.out.println("Error writing initial account info: " + e.getMessage());
-            return;
-        }
+        System.out.println("Welcome to the Bank System!");
 
+
+        System.out.print("Enter your User ID: ");
+        String userId = scanner.nextLine();
         System.out.print("Enter your password: ");
         String enteredPassword = scanner.nextLine();
 
-        if (accountService.confirmPassword(enteredPassword)) {
+        try {
+            List<User> users = UserService.readUsersFromFile();
+            User currentUser = users.stream()
+                    .filter(user -> user.getUserId().equals(userId) && user.getPassword().equals(enteredPassword))
+                    .findFirst()
+                    .orElse(null);
+
+            if (currentUser == null) {
+                System.out.println("Invalid User ID or Password. Access Denied.");
+                return;
+            }
+
+            System.out.println("Login successful!");
+            System.out.println("Welcome, " + currentUser.getUsername() + "!");
+
+            // Menu loop for user operations
             while (true) {
                 System.out.println("\nBank Account Menu:");
                 System.out.println("1. Check Balance");
                 System.out.println("2. Deposit Money");
                 System.out.println("3. Withdraw Money");
-                System.out.println("4. Exit");
+                System.out.println("4. View All Accounts Information");
+                System.out.println("5. Exit");
                 System.out.print("Enter your choice: ");
 
-                int choice = scanner.nextInt();
+                int choice;
+                try {
+                    choice = scanner.nextInt();
+                } catch (Exception e) {
+                    System.out.println("Invalid input. Please enter a number between 1 and 5.");
+                    scanner.nextLine(); // Clear the scanner buffer
+                    continue;
+                }
 
                 switch (choice) {
                     case 1:
-                        try {
-                            String[] accountInfo = accountService.readAccountFromFile();
-                            System.out.println(accountInfo[0] + "'s Current Balance: " + accountInfo[1]);
-                        } catch (IOException e) {
-                            System.out.println("Error reading file: " + e.getMessage());
-                        }
+                        // Check balance
+                        System.out.println("Current Balance: " + currentUser.getBalance());
                         break;
 
                     case 2:
-                        System.out.print("Enter amount to deposit: ");
+                        // Deposit money
+                        System.out.print("Enter the amount to deposit: ");
                         double depositAmount = scanner.nextDouble();
-                        deposite.deposit(depositAmount);
+                        depositService.deposit(userId, depositAmount);
                         break;
 
                     case 3:
-                        System.out.print("Enter amount to withdraw: ");
+                        // Withdraw money
+                        System.out.print("Enter the amount to withdraw: ");
                         double withdrawAmount = scanner.nextDouble();
-                        withdraw.performWithdraw(withdrawAmount);
+                        withdrawService.withdraw(userId, withdrawAmount);
                         break;
 
                     case 4:
-                        System.out.println("Exiting...");
+                        // View all account details
+                        System.out.println("All User Information:");
+                        List<User> allUsers = UserService.readUsersFromFile();
+                        allUsers.forEach(user -> System.out.println(
+                                "ID: " + user.getUserId() +
+                                        " | Name: " + user.getUsername() +
+                                        " | Balance: " + user.getBalance()
+                        ));
+                        break;
+
+                    case 5:
+                        // Exit
+                        System.out.println("Thank you yousef for using my Bank System. Goodbye!");
                         scanner.close();
                         return;
 
                     default:
-                        System.out.println("Invalid choice, please try again.");
+                        System.out.println("Invalid choice. Please select a valid option.");
                 }
             }
-        } else {
-            System.out.println("Incorrect password.");
+
+        } catch (IOException e) {
+            System.out.println("Error accessing user data: " + e.getMessage());
         }
     }
 }
