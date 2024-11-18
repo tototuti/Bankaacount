@@ -1,3 +1,12 @@
+package main;
+import models.User;
+//import services.DepositService;
+import services.WithdrawService;
+import utilities.Write;
+
+
+import utilities.UserService;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
@@ -6,13 +15,13 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Write writer = new Write();
-        DepositService depositService = new DepositService(writer);
+        UserService.DepositService depositService = new UserService.DepositService(writer);
         WithdrawService withdrawService = new WithdrawService(writer);
 
         System.out.println("Welcome to the Bank System!");
 
 
-        System.out.print("Enter your User ID: ");
+        System.out.print("Enter your models.User ID: ");
         String userId = scanner.nextLine();
         System.out.print("Enter your password: ");
         String enteredPassword = scanner.nextLine();
@@ -25,7 +34,7 @@ public class Main {
                     .orElse(null);
 
             if (currentUser == null) {
-                System.out.println("Invalid User ID or Password. Access Denied.");
+                System.out.println("Invalid models.User ID or Password. Access Denied.");
                 return;
             }
 
@@ -73,7 +82,7 @@ public class Main {
 
                     case 4:
                         // View all account details
-                        System.out.println("All User Information:");
+                        System.out.println("All models.User Information:");
                         List<User> allUsers = UserService.readUsersFromFile();
                         allUsers.forEach(user -> System.out.println(
                                 "ID: " + user.getUserId() +
