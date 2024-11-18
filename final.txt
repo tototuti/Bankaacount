@@ -1,2 +1,2 @@
-Withdrawal: User user1 withdrew 100.0. New Balance: 900.0
-Deposit: User user1 deposited 100.0. New Balance: 1000.0
+Withdrawal: models.User user1 withdrew 100.0. New Balance: 900.0
+Deposit: models.User user1 deposited 100.0. New Balance: 1000.0

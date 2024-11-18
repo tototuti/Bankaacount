@@ -1,6 +1,10 @@
+package services;
+
+import interfaces.WithdrawalOperations;
+import utilitiees.UserService;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class WithdrawService {
     private Write writer;
@@ -19,7 +23,7 @@ public class WithdrawService {
 
             User currentUser = getUserById(userId);
             if (currentUser == null) {
-                System.out.println("User not found. Withdrawal operation failed.");
+                System.out.println("models.User not found. Withdrawal operation failed.");
                 return;
             }
 
@@ -33,7 +37,7 @@ public class WithdrawService {
             currentUser.setBalance(newBalance);
 
             WithdrawalOperations withdrawalLog = (id, amt) -> {
-                writer.logToFinalFile("Withdrawal: User " + id + " withdrew " + amt + ". New Balance: " + newBalance);
+                writer.logToFinalFile("Withdrawal: models.User " + id + " withdrew " + amt + ". New Balance: " + newBalance);
             };
             withdrawalLog.apply(userId, amount);
 

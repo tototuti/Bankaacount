@@ -1,3 +1,5 @@
+package utilitiees;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
@@ -43,9 +45,9 @@ public class Write {
 
         if (userAccounts.containsKey(userId)) {
             userAccounts.put(userId, updatedInfo);
-            writeAllAccounts(userAccounts);
+            writeAllAccounts(userAccounts);  // Save the updated data back to the file
         } else {
-            throw new IOException("User with ID " + userId + " not found.");
+            throw new IOException("models.User with ID " + userId + " not found.");
         }
     }
 }
